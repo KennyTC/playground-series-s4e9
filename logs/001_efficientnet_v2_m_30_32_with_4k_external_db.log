@@ -1,0 +1,33 @@
+2024-08-12 06:13:15,633   INFO   TRAIN ALL---------------------------------
+2024-08-12 06:13:15,761   INFO   mean [0.6835, 0.5216, 0.4443], std [0.1682, 0.1579, 0.1619]
+2024-08-12 06:13:16,309   INFO   10542, 2637
+2024-08-12 06:17:44,536   INFO   Epoch 0, train_loss 107.7597, train_pauc 0.13, val_loss 21.4286, val_pauc 0.16 --> Best val_pauc 0.16 at epoch 0
+2024-08-12 06:22:00,626   INFO   Epoch 1, train_loss 97.8749, train_pauc 0.14, val_loss 16.0718, val_pauc 0.16 --> Best val_pauc 0.16 at epoch 1
+2024-08-12 06:26:16,742   INFO   Epoch 2, train_loss 68.9782, train_pauc 0.16, val_loss 15.0400, val_pauc 0.18 --> Best val_pauc 0.18 at epoch 2
+2024-08-12 06:30:33,541   INFO   Epoch 3, train_loss 62.7476, train_pauc 0.17, val_loss 12.4437, val_pauc 0.18 --> Best val_pauc 0.18 at epoch 3
+2024-08-12 06:34:55,232   INFO   Epoch 4, train_loss 61.2038, train_pauc 0.17, val_loss 11.7950, val_pauc 0.18 --> Best val_pauc 0.18 at epoch 4
+2024-08-12 06:39:13,849   INFO   Epoch 5, train_loss 55.7447, train_pauc 0.18, val_loss 12.7417, val_pauc 0.19 --> Best val_pauc 0.19 at epoch 5
+2024-08-12 06:43:32,171   INFO   Epoch 6, train_loss 52.1427, train_pauc 0.18, val_loss 11.0635, val_pauc 0.18
+2024-08-12 06:47:51,162   INFO   Epoch 7, train_loss 49.5346, train_pauc 0.18, val_loss 10.5323, val_pauc 0.18
+2024-08-12 06:52:13,738   INFO   Epoch 8, train_loss 48.0443, train_pauc 0.18, val_loss 9.9083, val_pauc 0.19 --> Best val_pauc 0.19 at epoch 8
+2024-08-12 06:56:33,013   INFO   Epoch 9, train_loss 54.4952, train_pauc 0.18, val_loss 10.4920, val_pauc 0.18
+2024-08-12 07:00:52,171   INFO   Epoch 10, train_loss 47.3251, train_pauc 0.18, val_loss 16.2332, val_pauc 0.17
+2024-08-12 07:05:10,760   INFO   Epoch 11, train_loss 44.8071, train_pauc 0.18, val_loss 10.5362, val_pauc 0.19
+2024-08-12 07:09:32,176   INFO   Epoch 12, train_loss 44.0077, train_pauc 0.18, val_loss 11.6691, val_pauc 0.19
+2024-08-12 07:13:52,436   INFO   Epoch 13, train_loss 42.7338, train_pauc 0.18, val_loss 9.2420, val_pauc 0.19 --> Best val_pauc 0.19 at epoch 13
+2024-08-12 07:18:18,470   INFO   Epoch 14, train_loss 41.4715, train_pauc 0.18, val_loss 8.7985, val_pauc 0.19
+2024-08-12 07:22:38,848   INFO   Epoch 15, train_loss 48.3761, train_pauc 0.18, val_loss 10.3584, val_pauc 0.19
+2024-08-12 07:26:59,280   INFO   Epoch 16, train_loss 43.3359, train_pauc 0.18, val_loss 9.6951, val_pauc 0.19 --> Best val_pauc 0.19 at epoch 16
+2024-08-12 07:31:19,807   INFO   Epoch 17, train_loss 41.4771, train_pauc 0.18, val_loss 8.5299, val_pauc 0.19 --> Best val_pauc 0.19 at epoch 17
+2024-08-12 07:35:38,214   INFO   Epoch 18, train_loss 38.4067, train_pauc 0.18, val_loss 8.1569, val_pauc 0.19 --> Best val_pauc 0.19 at epoch 18
+2024-08-12 07:39:57,279   INFO   Epoch 19, train_loss 35.7672, train_pauc 0.19, val_loss 8.0697, val_pauc 0.19
+2024-08-12 07:44:16,419   INFO   Epoch 20, train_loss 34.1786, train_pauc 0.19, val_loss 7.9401, val_pauc 0.19 --> Best val_pauc 0.19 at epoch 20
+2024-08-12 07:48:35,484   INFO   Epoch 21, train_loss 37.0026, train_pauc 0.18, val_loss 7.9257, val_pauc 0.19
+2024-08-12 07:52:56,228   INFO   Epoch 22, train_loss 37.4208, train_pauc 0.19, val_loss 8.1885, val_pauc 0.19
+2024-08-12 07:57:16,414   INFO   Epoch 23, train_loss 36.4314, train_pauc 0.19, val_loss 8.8623, val_pauc 0.19
+2024-08-12 08:01:37,009   INFO   Epoch 24, train_loss 32.5455, train_pauc 0.19, val_loss 7.2325, val_pauc 0.19
+2024-08-12 08:05:58,043   INFO   Epoch 25, train_loss 32.4772, train_pauc 0.19, val_loss 8.4027, val_pauc 0.19
+2024-08-12 08:10:19,784   INFO   Epoch 26, train_loss 33.0116, train_pauc 0.19, val_loss 7.0221, val_pauc 0.19
+2024-08-12 08:14:40,913   INFO   Epoch 27, train_loss 31.7297, train_pauc 0.19, val_loss 7.5118, val_pauc 0.19
+2024-08-12 08:19:03,390   INFO   Epoch 28, train_loss 31.6909, train_pauc 0.19, val_loss 6.8553, val_pauc 0.19 --> Best val_pauc 0.19 at epoch 28
+2024-08-12 08:23:23,823   INFO   Epoch 29, train_loss 33.3500, train_pauc 0.19, val_loss 7.0681, val_pauc 0.19

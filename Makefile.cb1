@@ -1,0 +1,64 @@
+include Makefile.feature.j1
+
+N = 3000
+LEARNING_RATE = 0.03
+MAX_DEPTH=6
+L2_LEAF_REG = 3
+MIN_DATA_IN_LEAF = 10
+SCALE_POS_WEIGHT = 1
+EARLY_STOP = 100
+ALGO_NAME := cb1
+MODEL_NAME := $(ALGO_NAME)_$(FEATURE_NAME)
+
+METRIC_VAL := $(DIR_METRIC)/$(MODEL_NAME).val.txt
+
+PREDICT_VAL := $(DIR_VAL)/$(MODEL_NAME).val.yht
+PREDICT_TST := $(DIR_TST)/$(MODEL_NAME).tst.yht
+FEATURE_IMP := $(DIR_MODEL)/$(MODEL_NAME).imp.csv
+
+SUBMISSION_TST := $(DIR_SUB)/$(MODEL_NAME).sub.csv
+SUBMISSION_TST_GZ := $(DIR_SUB)/$(MODEL_NAME).sub.csv.gz
+
+all: validation submission
+validation: $(METRIC_VAL)
+submission: $(SUBMISSION_TST)
+retrain: clean_$(ALGO_NAME) submission
+
+submit: $(SUBMISSION_TST)
+	kaggle competitions submit -c $(COMPETITION) -f $< -m $(MODEL_NAME)
+
+$(PREDICT_TST) $(PREDICT_VAL): $(FEATURE_TRN) $(FEATURE_TST) \
+                                   | $(DIR_VAL) $(DIR_TST)
+	./src/train_predict_cb1.py --train-file $< \
+                              --test-file $(word 2, $^) \
+                              --predict-valid-file $(PREDICT_VAL) \
+                              --predict-test-file $(PREDICT_TST) \
+                              --n $(N) \
+                              --learning_rate $(LEARNING_RATE) \
+                              --max_depth $(MAX_DEPTH) \
+							  --l2_leaf_reg $(L2_LEAF_REG) \
+							  --min_data_in_leaf $(MIN_DATA_IN_LEAF) \
+							  --scale_pos_weight $(SCALE_POS_WEIGHT) \
+                              --early-stop $(EARLY_STOP)
+
+$(SUBMISSION_TST_GZ): $(SUBMISSION_TST)
+	gzip $<
+
+$(SUBMISSION_TST): $(PREDICT_TST) $(HEADER) $(ID_TST) | $(DIR_SUB)
+	paste -d, $(lastword $^) $< > $@.tmp
+	cat $(word 2, $^) $@.tmp > $@
+	rm $@.tmp
+
+$(METRIC_VAL): $(PREDICT_VAL) $(FEATURE_TRN) | $(DIR_METRIC)
+	python ./src/evaluate.py --predict-file $< \
+                             --target-file $(lastword $^) > $@
+	cat $@
+
+
+clean:: clean_$(ALGO_NAME)
+
+clean_$(ALGO_NAME):
+	-rm $(METRIC_VAL) $(PREDICT_VAL) $(PREDICT_TST) $(SUBMISSION_TST)
+	find . -name '*.pyc' -delete
+
+.DEFAULT_GOAL := all

@@ -1,9 +1,9 @@
 #--------------------------------------------------------------------------
-# j3: based on j2 + milage feature, model year feature
+# j5: j4 + learn feature based on this nb: https://www.kaggle.com/code/cdthinh/nn-starter-lb-72300-cv-72800
 #--------------------------------------------------------------------------
 include Makefile
 
-FEATURE_NAME := j3
+FEATURE_NAME := j5
 
 FEATURE_TRN := $(DIR_FEATURE)/$(FEATURE_NAME).trn.h5
 FEATURE_TST := $(DIR_FEATURE)/$(FEATURE_NAME).tst.h5

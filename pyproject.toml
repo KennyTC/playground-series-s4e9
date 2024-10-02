@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "isic2024"
+name = "s4e9"
 version = "0.1.0"
 description = ""
 authors = ["thinhcd <{ID}+{username}@users.noreply.github.com>"]
@@ -20,6 +20,7 @@ torch = "^2.4.0"
 isic-cli = "^11.0.0"
 torchvision = "^0.19.0"
 optuna = "^3.6.1"
+seaborn = "^0.13.2"
 
 
 [build-system]

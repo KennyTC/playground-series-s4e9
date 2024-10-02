@@ -11,6 +11,7 @@ import pickle
 from sklearn.datasets import load_svmlight_file, dump_svmlight_file
 from scipy import sparse
 import time
+import pandas as pd
 
 
 logger = getLogger(__name__)
@@ -43,6 +44,9 @@ def save_data(X, y, path):
         y = np.zeros((X.shape[0],))
 
     func(X, y, path)
+
+def save_df_csv(df, path):
+    df.to_csv(path)
 
 
 def save_csv(X, y, path):
@@ -121,6 +125,9 @@ def load_data(path, dense=False):
 
     return X, y
 
+def load_df_csv(path):
+    df = pd.read_csv(path)
+    return df
 
 def load_csv(path):
     """Load data from a CSV file.

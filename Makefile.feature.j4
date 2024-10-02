@@ -1,9 +1,9 @@
 #--------------------------------------------------------------------------
-# j3: based on j2 + milage feature, model year feature
+# j4: j1 but change model year to be categorical 
 #--------------------------------------------------------------------------
 include Makefile
 
-FEATURE_NAME := j3
+FEATURE_NAME := j4
 
 FEATURE_TRN := $(DIR_FEATURE)/$(FEATURE_NAME).trn.h5
 FEATURE_TST := $(DIR_FEATURE)/$(FEATURE_NAME).tst.h5

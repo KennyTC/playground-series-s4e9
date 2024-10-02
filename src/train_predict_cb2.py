@@ -19,61 +19,61 @@ from functools import partial
 import optuna
 from optuna.samplers import TPESampler
 
-def objective_cb(train_file, trial):
-    params = {
-        'loss_function':     'RMSE',
-        'iterations':        200,
-        'verbose':           False,
-        'random_state':      SEED,
-        'learning_rate':     trial.suggest_float('learning_rate', 1e-2, 1e-1, log=True),
-        'max_depth':         trial.suggest_int('max_depth', 4, 8),
-        'l2_leaf_reg':       trial.suggest_float('l2_leaf_reg', 1e-3, 10.0, log=True),
-        'subsample':         trial.suggest_float('subsample', 0.4, 1.0),
-        'colsample_bylevel': trial.suggest_float('colsample_bylevel', 0.4, 1.0),
-        'min_data_in_leaf':  trial.suggest_int('min_data_in_leaf', 5, 100),
-        # 'scale_pos_weight':  trial.suggest_float('scale_pos_weight', 0.8, 4.0),
-        # 'bootstrap_type':    'Bayesian',  # Optional: depending on your use case, you may want to tune this as well
-    }
+# def objective_cb(train_file, trial):
+#     params = {
+#         'loss_function':     'RMSE',
+#         'iterations':        200,
+#         'verbose':           False,
+#         'random_state':      SEED,
+#         'learning_rate':     trial.suggest_float('learning_rate', 1e-2, 1e-1, log=True),
+#         'max_depth':         trial.suggest_int('max_depth', 4, 8),
+#         'l2_leaf_reg':       trial.suggest_float('l2_leaf_reg', 1e-3, 10.0, log=True),
+#         'subsample':         trial.suggest_float('subsample', 0.4, 1.0),
+#         'colsample_bylevel': trial.suggest_float('colsample_bylevel', 0.4, 1.0),
+#         'min_data_in_leaf':  trial.suggest_int('min_data_in_leaf', 5, 100),
+#         # 'scale_pos_weight':  trial.suggest_float('scale_pos_weight', 0.8, 4.0),
+#         # 'bootstrap_type':    'Bayesian',  # Optional: depending on your use case, you may want to tune this as well
+#     }
 
-    estimator = CatBoostRegressor(**params)
-    X, y = load_data(train_file)    
+#     estimator = CatBoostRegressor(**params)
+#     X, y = load_data(train_file)    
     
-    cv = KFold(N_FOLD, shuffle=True)
+#     cv = KFold(N_FOLD, shuffle=True)
 
-    val_score = cross_val_score(
-        estimator=estimator, 
-        X=X, y=y, 
-        cv=cv, 
-        scoring="neg_root_mean_squared_error",
-    )
-    return np.mean(val_score)
+#     val_score = cross_val_score(
+#         estimator=estimator, 
+#         X=X, y=y, 
+#         cv=cv, 
+#         scoring="neg_root_mean_squared_error",
+#     )
+#     return np.mean(val_score)
 
-def tuning(train_file, test_file, predict_valid_file, predict_test_file,early_stopping, retrain):
-    # Use functools.partial to include train_file in the objective function
-    objective = partial(objective_cb, train_file)
+# def tuning(train_file, test_file, predict_valid_file, predict_test_file,early_stopping, retrain):
+#     # Use functools.partial to include train_file in the objective function
+#     objective = partial(objective_cb, train_file)
 
-    start_time = time.time()
-    study = optuna.create_study(direction='maximize', sampler=TPESampler(seed=SEED))
-    study.optimize(objective, n_trials=100, show_progress_bar=True)
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-    logging.info(f"Catboost tuning took {elapsed_time:.2f} seconds.")
+#     start_time = time.time()
+#     study = optuna.create_study(direction='maximize', sampler=TPESampler(seed=SEED))
+#     study.optimize(objective, n_trials=100, show_progress_bar=True)
+#     end_time = time.time()
+#     elapsed_time = end_time - start_time
+#     logging.info(f"Catboost tuning took {elapsed_time:.2f} seconds.")
 
-    # Output the best parameters and the best score achieved
-    logging.info(f"Best parameters: {study.best_params}")
-    logging.info(f"Best score achieved: {study.best_value}")
-    logging.info("Train CV again using best params-------------------")
+#     # Output the best parameters and the best score achieved
+#     logging.info(f"Best parameters: {study.best_params}")
+#     logging.info(f"Best score achieved: {study.best_value}")
+#     logging.info("Train CV again using best params-------------------")
 
-    params = study.best_params.update({
-        'loss_function':     'RMSE',
-        'verbose':           1000,
-        'random_state':      SEED
-    })
+#     params = study.best_params.update({
+#         'loss_function':     'RMSE',
+#         'verbose':           1000,
+#         'random_state':      SEED
+#     })
 
-    X, y = load_data(train_file)
-    X_tst, _ = load_data(test_file)
-    print(f"params {params}")
-    train(params, X, y, X_tst, predict_valid_file, predict_test_file, early_stopping, retrain)
+#     X, y = load_data(train_file)
+#     X_tst, _ = load_data(test_file)
+#     print(f"params {params}")
+#     train(params, X, y, X_tst, predict_valid_file, predict_test_file, early_stopping, retrain)
 
 def train(params, X, y, cat_features, X_tst, predict_valid_file, predict_test_file, n_stop, retrain):
     '''
@@ -142,7 +142,7 @@ def train_predict(train_file, test_file, feature_map_file, predict_valid_file, p
 
   
     params = {
-        'loss_function':     'RMSE',
+        'loss_function':     'MAE',
         'iterations':        n,
         'verbose':           100,
         'random_state':      SEED,
@@ -153,24 +153,10 @@ def train_predict(train_file, test_file, feature_map_file, predict_valid_file, p
         # 'scale_pos_weight':  scale_pos_weight,
         # 'bootstrap_type':    'Bayesian',  
     }
-    # params = {
-    #     'learning_rate': 0.06940211837391265, 
-    #     'max_depth': 6, 
-    #     'l2_leaf_reg': 2.904896289937003, 
-    #     'subsample': 0.6873402237943126, 
-    #     'colsample_bylevel': 0.6367600994587124, 
-    #     'min_data_in_leaf': 49
-    # }
-    # params = {'loss_function': 'RMSE',
-    #     'random_state':      SEED,
-    #      'verbose': 100,
-    #     'learning_rate': 0.08252990790060984, 'max_depth': 5, 'l2_leaf_reg': 8.024989478833472, 'subsample': 0.6886299714951106, 'colsample_bylevel': 0.7635139017290671, 'min_data_in_leaf': 80}
-
+    
     train(params, X, y, cat_features, X_tst, predict_valid_file, predict_test_file, n_stop, retrain)
     
     
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--train-file', required=True, dest='train_file')

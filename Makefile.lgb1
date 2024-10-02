@@ -1,4 +1,4 @@
-include Makefile.feature.j3
+include Makefile.feature.j7
 
 N = 3000
 N_LEAF = 100 
@@ -14,7 +14,6 @@ ALGO_NAME := lgb1
 MODEL_NAME := $(ALGO_NAME)_$(FEATURE_NAME)
 
 METRIC_VAL := $(DIR_METRIC)/$(MODEL_NAME).val.txt
-
 PREDICT_VAL := $(DIR_VAL)/$(MODEL_NAME).val.yht
 PREDICT_TST := $(DIR_TST)/$(MODEL_NAME).tst.yht
 FEATURE_IMP := $(DIR_MODEL)/$(MODEL_NAME).imp.csv

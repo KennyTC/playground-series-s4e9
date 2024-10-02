@@ -1,5 +1,5 @@
 #--------------------------------------------------------------------------
-# j1: features for xgboost, lightgbm, rf, et
+# j1: the very basic features for xgboost, lightgbm, catboost
 #--------------------------------------------------------------------------
 include Makefile
 

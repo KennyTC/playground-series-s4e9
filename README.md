@@ -1,21 +1,23 @@
-# Kaggler TV Episode #4: Kaggle Competition Pipeline Demo
-
-Demo video is available on [YouTube](https://youtu.be/861NAO5-XJo)
-
-- Comments are available in the subtitle. Please turn on the subtitle.
-- Kaggler pipeline template: https://github.com/jeongyoonlee/kaggler-template
-- GitHub repo used in the demo: https://github.com/jeongyoonlee/cat-in-the-dat-ii
-- Blog post about the pipeline: http://kaggler.com/2015/09/21/kagglers-toolbox.html
-
-Made by Kagglers, for Kagglers.
-
-Kaggler TV uploads one video a week every Sunday at 10am Pacific Time.
-
-You can find the schedule and request for contents at Kaggler TV GitHub:
-https://github.com/kaggler-tv/kaggler-tv-schedule
-
-
-normally used command: 
+Normally used command: 
 
 make -f Makefile.lgb1
 cat build/metric/*|sort
+cat build/metric/*.txt | awk '{print $1 "\t" $2 "\t" $3}' | sort -k3,3n
+
+
+Note:
+For raw data:
+- for simple model lightgbm, xgboost, cb 
+  - CV score is ~ to public score (around 72k)
+- for esb, CV score better (65k), but public score is worse 73k (augl1), even 79k (lgb1)
+
+For used_cars
+- for simple model lightgbm, xgboost, cb
+  - cv score is around 65k, 66k, but public score is 75k, 76k
+
+lgb1_j1_org \
+cb1_j1_org \
+xgb1_j1_org \
+lgb1_j4_org \
+cb1_j4_org \
+xgb1_j4_org 

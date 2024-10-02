@@ -1,11 +1,11 @@
 # XXX: competition name
-COMPETITION := isic-2024-challenge
+COMPETITION := playground-series-s4e9
 
 # gsed on macOS. sed on LINUX
 SED := gsed
 
 # directories
-DIR_DATA := data/processed/undersample_1_1
+DIR_DATA := data/raw
 DIR_BUILD := build
 DIR_FEATURE := $(DIR_BUILD)/feature
 DIR_METRIC := $(DIR_BUILD)/metric
@@ -20,11 +20,12 @@ DIRS := $(DIR_DATA) $(DIR_BUILD) $(DIR_FEATURE) $(DIR_METRIC) $(DIR_MODEL) \
         $(DIR_VAL) $(DIR_TST) $(DIR_SUB)
 
 # data files for training and predict
-DATA_TRN := $(DIR_DATA)/train-metadata.csv
-DATA_TST := $(DIR_DATA)/test-metadata.csv
+DATA_TRN := $(DIR_DATA)/train.csv
+# DATA_TRN := $(DIR_DATA)/used_cars.csv
+DATA_TST := $(DIR_DATA)/test.csv
 SAMPLE_SUBMISSION := $(DIR_DATA)/sample_submission.csv
 
-LABEL_IDX = 2
+LABEL_IDX = 13 # this should include the ID column, and start from 1
 
 ID_TST := $(DIR_DATA)/id.tst.csv
 HEADER := $(DIR_DATA)/header.csv
@@ -37,9 +38,9 @@ data: $(DATA_TRN) $(DATA_TST) $(SAMPLE_SUBMISSION)
 $(DIRS):
 	mkdir -p $@
 
-# $(DATA_TRN) $(DATA_TST) $(SAMPLE_SUBMISSION): | $(DIR_DATA)
-# 	kaggle competitions download -c $(COMPETITION) -p $(DIR_DATA)
-# 	find . -name "*.zip" -exec sh -c 'unzip -d `dirname {}` {}' ';'
+$(DATA_TRN) $(DATA_TST) $(SAMPLE_SUBMISSION): | $(DIR_DATA)
+	kaggle competitions download -c $(COMPETITION) -p $(DIR_DATA)
+	find . -name "*.zip" -exec sh -c 'unzip -d `dirname {}` {}' ';'
 
 $(HEADER): $(SAMPLE_SUBMISSION)
 	head -1 $< > $@

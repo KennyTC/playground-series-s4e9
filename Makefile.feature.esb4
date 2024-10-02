@@ -1,12 +1,19 @@
 include Makefile
 
-FEATURE_NAME := esb1
+FEATURE_NAME := esb4
 
-BASE_MODELS := lgb1_j1 \
-	           cb1_j1 \
-			   xgb1_j1 \
-			   augl1_j1
+BASE_MODELS := lgb1_j4 \
+	           cb1_j4 \
+			   xgb1_j4 \
+			   lgb1_j3 \
+	           cb1_j3 \
+			   xgb1_j3 \
+			   lgb1_j6 \
+	           cb1_j6 \
+			   xgb1_j6 
+			     
 
+			   
 PREDICTS_TRN := $(foreach m, $(BASE_MODELS), $(DIR_VAL)/$(m).val.yht)
 PREDICTS_TST := $(foreach m, $(BASE_MODELS), $(DIR_TST)/$(m).tst.yht)
 

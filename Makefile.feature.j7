@@ -1,12 +1,12 @@
 #--------------------------------------------------------------------------
-# j3: based on j2 + milage feature, model year feature
+# j7: j6 + rm horsepower_category, add engine_v, and change some feature to category
 #--------------------------------------------------------------------------
 include Makefile
 
-FEATURE_NAME := j3
+FEATURE_NAME := j7
 
-FEATURE_TRN := $(DIR_FEATURE)/$(FEATURE_NAME).trn.h5
-FEATURE_TST := $(DIR_FEATURE)/$(FEATURE_NAME).tst.h5
+FEATURE_TRN := $(DIR_FEATURE)/$(FEATURE_NAME).trn.csv
+FEATURE_TST := $(DIR_FEATURE)/$(FEATURE_NAME).tst.csv
 FEATURE_MAP := $(DIR_FEATURE)/$(FEATURE_NAME).fmap
 
 $(FEATURE_TRN) $(FEATURE_TST) $(FEATURE_MAP): $(DATA_TRN) $(DATA_TST) | $(DIR_FEATURE)

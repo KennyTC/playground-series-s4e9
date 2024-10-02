@@ -1,16 +1,10 @@
 include Makefile.feature.esb5
 
-N = 3000
-LEARNING_RATE = 0.03
-MAX_DEPTH=6
-L2_LEAF_REG = 3
-MIN_DATA_IN_LEAF = 10
-SCALE_POS_WEIGHT = 1
-EARLY_STOP = 100
-ALGO_NAME := cb1
+ALGO_NAME := augl1
 MODEL_NAME := $(ALGO_NAME)_$(FEATURE_NAME)
 
 METRIC_VAL := $(DIR_METRIC)/$(MODEL_NAME).val.txt
+
 PREDICT_VAL := $(DIR_VAL)/$(MODEL_NAME).val.yht
 PREDICT_TST := $(DIR_TST)/$(MODEL_NAME).tst.yht
 FEATURE_IMP := $(DIR_MODEL)/$(MODEL_NAME).imp.csv
@@ -28,18 +22,10 @@ submit: $(SUBMISSION_TST)
 
 $(PREDICT_TST) $(PREDICT_VAL): $(FEATURE_TRN) $(FEATURE_TST) \
                                    | $(DIR_VAL) $(DIR_TST)
-	./src/train_predict_cb1.py --train-file $< \
+	./src/train_predict_augl1.py --train-file $< \
                               --test-file $(word 2, $^) \
-							  --feature-map-file $(FEATURE_MAP) \
                               --predict-valid-file $(PREDICT_VAL) \
                               --predict-test-file $(PREDICT_TST) \
-                              --n $(N) \
-                              --learning_rate $(LEARNING_RATE) \
-                              --max_depth $(MAX_DEPTH) \
-							  --l2_leaf_reg $(L2_LEAF_REG) \
-							  --min_data_in_leaf $(MIN_DATA_IN_LEAF) \
-							  --scale_pos_weight $(SCALE_POS_WEIGHT) \
-                              --early-stop $(EARLY_STOP)
 
 $(SUBMISSION_TST_GZ): $(SUBMISSION_TST)
 	gzip $<

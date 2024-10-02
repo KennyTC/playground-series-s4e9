@@ -12,66 +12,66 @@ import pandas as pd
 import time
 import optuna
 from optuna.samplers import TPESampler
-from const import N_FOLD, SEED, TARGET_COL
+
+from const import N_FOLD, SEED
 from data_io import load_data
 from functools import partial
 import lightgbm as lgb
 from lightgbm.callback import log_evaluation, early_stopping
 from sklearn.metrics import mean_squared_error
 
+# def objective_func(train_file, trial):
+#     params = {
+#         'objective':'regression',
+#         "verbose": -1,
+#         'n_iter': 200,
+#         'boosting_type':  'gbdt',
+#         'lambda_l1':         trial.suggest_float('lambda_l1', 1e-3, 10.0, log=True),
+#         'lambda_l2':         trial.suggest_float('lambda_l2', 1e-3, 10.0, log=True),
+#         'learning_rate':     trial.suggest_float('learning_rate', 1e-2, 1e-1, log=True),
+#         'max_depth':         trial.suggest_int('max_depth', 4, 8),
+#         'num_leaves':        trial.suggest_int('num_leaves', 16, 256),
+#         'colsample_bytree':  trial.suggest_float('colsample_bytree', 0.4, 1.0),
+#         'colsample_bynode':  trial.suggest_float('colsample_bynode', 0.4, 1.0),
+#         'bagging_fraction':  trial.suggest_float('bagging_fraction', 0.4, 1.0),
+#         'bagging_freq':      trial.suggest_int('bagging_freq', 1, 7),
+#         'min_data_in_leaf':  trial.suggest_int('min_data_in_leaf', 5, 100),
+#         'scale_pos_weight' : trial.suggest_float('scale_pos_weight', 0.8, 4.0),
+#     }
 
-def objective_func(train_file, trial):
-    params = {
-        'objective':'regression',
-        "verbose": -1,
-        'n_iter': 200,
-        'boosting_type':  'gbdt',
-        'lambda_l1':         trial.suggest_float('lambda_l1', 1e-3, 10.0, log=True),
-        'lambda_l2':         trial.suggest_float('lambda_l2', 1e-3, 10.0, log=True),
-        'learning_rate':     trial.suggest_float('learning_rate', 1e-2, 1e-1, log=True),
-        'max_depth':         trial.suggest_int('max_depth', 4, 8),
-        'num_leaves':        trial.suggest_int('num_leaves', 16, 256),
-        'colsample_bytree':  trial.suggest_float('colsample_bytree', 0.4, 1.0),
-        'colsample_bynode':  trial.suggest_float('colsample_bynode', 0.4, 1.0),
-        'bagging_fraction':  trial.suggest_float('bagging_fraction', 0.4, 1.0),
-        'bagging_freq':      trial.suggest_int('bagging_freq', 1, 7),
-        'min_data_in_leaf':  trial.suggest_int('min_data_in_leaf', 5, 100),
-        'scale_pos_weight' : trial.suggest_float('scale_pos_weight', 0.8, 4.0),
-    }
+#     estimator = lgb.LGBMRegressor(**params)
+#     X, y = load_data(train_file)    
+#     cv = StratifiedKFold(5, shuffle=True)
 
-    estimator = lgb.LGBMRegressor(**params)
-    X, y = load_data(train_file)    
-    cv = StratifiedKFold(5, shuffle=True)
+#     val_score = cross_val_score(
+#         estimator=estimator, 
+#         X=X, y=y, 
+#         cv=cv, 
+#         scoring="neg_root_mean_squared_error",
+#     )
+#     return np.mean(val_score)
 
-    val_score = cross_val_score(
-        estimator=estimator, 
-        X=X, y=y, 
-        cv=cv, 
-        scoring="neg_root_mean_squared_error",
-    )
-    return np.mean(val_score)
+# def tuning(train_file, test_file, predict_valid_file, predict_test_file, n_est, n_stop, retrain):
+#     # Use functools.partial to include train_file in the objective function
+#     objective = partial(objective_func, train_file)
 
-def tuning(train_file, test_file, predict_valid_file, predict_test_file, n_est, n_stop, retrain):
-    # Use functools.partial to include train_file in the objective function
-    objective = partial(objective_func, train_file)
+#     start_time = time.time()
+#     study = optuna.create_study(direction='maximize', sampler=TPESampler(seed=SEED))
+#     study.optimize(objective, n_trials=100, show_progress_bar=True)
+#     end_time = time.time()
+#     elapsed_time_lgb = end_time - start_time
+#     logging.info(f"LightGBM tuning took {elapsed_time_lgb:.2f} seconds.")
 
-    start_time = time.time()
-    study = optuna.create_study(direction='maximize', sampler=TPESampler(seed=SEED))
-    study.optimize(objective, n_trials=100, show_progress_bar=True)
-    end_time = time.time()
-    elapsed_time_lgb = end_time - start_time
-    logging.info(f"LightGBM tuning took {elapsed_time_lgb:.2f} seconds.")
+#     params = study.best_params.update({
+#         'loss_function':     'RMSE',
+#         'verbose':           1000,
+#         'random_state':      SEED
+#     })
 
-    params = study.best_params.update({
-        'loss_function':     'RMSE',
-        'verbose':           1000,
-        'random_state':      SEED
-    })
-
-    X, y = load_data(train_file)
-    X_tst, _ = load_data(test_file)
-    print(f"params {params}")
-    train(params, X, y, X_tst, predict_valid_file, predict_test_file, n_est, n_stop, retrain)
+#     X, y = load_data(train_file)
+#     X_tst, _ = load_data(test_file)
+#     print(f"params {params}")
+#     train(params, X, y, X_tst, predict_valid_file, predict_test_file, n_est, n_stop, retrain)
 
  
 def train(params, X, y, X_tst, predict_valid_file, predict_test_file, n_est, n_stop, retrain):
@@ -103,8 +103,8 @@ def train(params, X, y, X_tst, predict_valid_file, predict_test_file, n_est, n_s
         n_bests.append(n_best)
         
         p[i_val] = clf.predict(X_val)
-        best_score = clf.best_score['valid_0']['rmse']
-        logging.info(f'CV # {i}: best iteration={n_best}, best_score {best_score:.4f}')
+        best_score = clf.best_score
+        logging.info(f'CV # {i}: best iteration={n_best}, best_score {best_score}')
 
         if not retrain:
             p_tst += clf.predict(X_tst) / N_FOLD
@@ -126,34 +126,18 @@ def train_predict(train_file, test_file, predict_valid_file, predict_test_file,
     # GroupKFold for cross-validation
     
 
-    # params = {
-    #     "objective":"regression",
-    #     "num_leaves": n_leaf,
-    #     "min_data_in_leaf": n_min,
-    #     "n_estimators": n_est,
-    #     "learning_rate": lrate,
-    #     "feature_fraction": subcol,
-    #     "bagging_fraction": subrow,
-    #     "verbose": -1,        
-    #     "metric":"rmse",
-    # }
-    params = {'lambda_l1': 3.24929391390274, 
-              'lambda_l2': 1.1536030323476847, 
-              'learning_rate': 0.040992498777998335, 
-              'max_depth': 8, 
-              'num_leaves': 140, 
-              'colsample_bytree': 0.4389146918473635, 
-              'colsample_bynode': 0.6202795244414527, 
-              'bagging_fraction': 0.9452778125983838, 
-              'bagging_freq': 1, 
-              'min_data_in_leaf': 55, 
-              'scale_pos_weight': 2.613793926682299}
-    params.update({"objective":"regression","verbose": -1, "metric":"rmse"})
+    params = {
+        "objective":"regression",
+        "num_leaves": n_leaf,
+        "min_data_in_leaf": n_min,
+        "n_estimators": n_est,
+        "learning_rate": lrate,
+        "feature_fraction": subcol,
+        "bagging_fraction": subrow,
+        "verbose": -1,        
+        "metric":"mae",
+    }
     train(params, X, y, X_tst, predict_valid_file, predict_test_file, n_est, n_stop, retrain)
-
-    
-
-
 
 
 if __name__ == '__main__':

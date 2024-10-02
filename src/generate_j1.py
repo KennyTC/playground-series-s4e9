@@ -11,7 +11,6 @@ import time
 # from kaggler.preprocessing import LabelEncoder
 from sklearn.preprocessing import LabelEncoder
 from data_io import save_data
-
 from const import ID_COL, TARGET_COL
 
 
@@ -20,51 +19,22 @@ def generate_feature(train_file, test_file, train_feature_file,
     
     trn = pd.read_csv(train_file, index_col=ID_COL)
     tst = pd.read_csv(test_file, index_col=ID_COL)
+
+    trn["milage"]= trn["milage"].str.replace("mi.","").replace(" ","").str.replace(",","").astype(int, errors="ignore")
+    trn["price"]= trn["price"].str.replace("$","").replace(" ","").str.replace(",","").astype(int, errors="ignore")
+    
     logging.info(f'loading raw data: train {trn.shape}, test {tst.shape}')
     y = trn[TARGET_COL].values
     n_trn = trn.shape[0]
     trn.drop(TARGET_COL, axis=1, inplace=True)
 
+    
     cat_cols = [x for x in trn.columns if trn[x].dtype == 'object']
     num_cols = [x for x in trn.columns if trn[x].dtype != 'object']
 
-
-    col_not_in_test = ['iddx_4',
-    'iddx_1',
-    'iddx_full',
-    'iddx_3',
-    'mel_mitotic_index',
-    'iddx_5',
-    'mel_thick_mm',
-    'lesion_id',
-    'tbp_lv_dnn_lesion_confidence',
-    'target',
-    'iddx_2'
-    ]
-    col_target = 'target'
-    col_id = [
-        "isic_id", # unique id
-    ]
-    col_single = [
-        "image_type", # single value
-    ]
-    col_nul = [
-        "iddx_2","iddx_3","iddx_4","iddx_5", # almost nan
-        "iddx_full", # contains same information as column iddx_1, so I decide not to use
-        "lesion_id", # 95% nan,        
-        "mel_mitotic_index", # almost nan, 
-        "mel_thick_mm", # 99% nan   
-    ]
-    cat_cols = [x for x in trn.columns if trn[x].dtype == 'object' if x not in set(col_not_in_test + col_id + col_single + col_nul + [col_target])]
-    num_cols = [x for x in trn.columns if trn[x].dtype != 'object' if x not in set(col_not_in_test + col_id + col_single + col_nul + [col_target])]
-    num_cols = [i for i in num_cols if i not in ["tbp_lv_perimeterMM","tbp_lv_Lext","tbp_lv_norm_color", "tbp_lv_deltaLB"]]
-    logging.info('categorical: {}, numerical: {}'.format(len(cat_cols),len(num_cols)))
-    print(f"cat: {cat_cols}")
-    print(f"num: {num_cols}")
-
     cols = cat_cols + num_cols
     df = pd.concat([trn[cols], tst[cols]], axis=0)
-    logging.info(f"df shape {df.shape}")
+    logging.info(f"df shape {df.shape}, cat {cat_cols}, num {num_cols}")
 
     logging.info('label encoding categorical variables')
     lbe = LabelEncoder()
@@ -82,9 +52,11 @@ def generate_feature(train_file, test_file, train_feature_file,
     save_data(df.values[n_trn:,], None, test_feature_file)
     
 if __name__ == '__main__':
-
+    logname = f"{os.path.basename(__file__).replace('generate_','').replace('.py','')}.log"
     logging.basicConfig(format='%(asctime)s   %(levelname)s   %(message)s',
-                        level=logging.DEBUG)
+                        level=logging.DEBUG,
+                        filename=f'logs/{logname}'
+                    )
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--train-file', required=True, dest='train_file')

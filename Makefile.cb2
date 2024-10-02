@@ -1,4 +1,4 @@
-include Makefile.feature.esb5
+include Makefile.feature.j7
 
 N = 3000
 LEARNING_RATE = 0.03
@@ -7,7 +7,7 @@ L2_LEAF_REG = 3
 MIN_DATA_IN_LEAF = 10
 SCALE_POS_WEIGHT = 1
 EARLY_STOP = 100
-ALGO_NAME := cb1
+ALGO_NAME := cb2
 MODEL_NAME := $(ALGO_NAME)_$(FEATURE_NAME)
 
 METRIC_VAL := $(DIR_METRIC)/$(MODEL_NAME).val.txt
@@ -28,7 +28,7 @@ submit: $(SUBMISSION_TST)
 
 $(PREDICT_TST) $(PREDICT_VAL): $(FEATURE_TRN) $(FEATURE_TST) \
                                    | $(DIR_VAL) $(DIR_TST)
-	./src/train_predict_cb1.py --train-file $< \
+	./src/train_predict_cb2.py --train-file $< \
                               --test-file $(word 2, $^) \
 							  --feature-map-file $(FEATURE_MAP) \
                               --predict-valid-file $(PREDICT_VAL) \

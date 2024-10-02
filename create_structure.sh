@@ -2,11 +2,11 @@
 echo "Creating folder structure..."
 
 # Create the main directory structure
-mkdir data models notebooks output reports runs src
+mkdir data models
 
 # Create subdirectories
 mkdir data/external data/processed data/raw
-mkdir src/data src/features src/models src/visualization
+# mkdir src/data src/features src/models src/visualization
 
 # Create placeholder Python scripts
 # touch src/data/01.create_data.py

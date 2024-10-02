@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from __future__ import division
-from scipy import sparse
 import argparse
 import logging
 import numpy as np
@@ -8,55 +7,56 @@ import os
 import pandas as pd
 import time
 
-from kaggler.data_io import load_data, save_data
-from kaggler.preprocessing import OneHotEncoder, Normalizer
-
+# from kaggler.data_io import load_data, save_data
+# from kaggler.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder
+from data_io import save_data
 from const import ID_COL, TARGET_COL
 
 
 def generate_feature(train_file, test_file, train_feature_file,
                      test_feature_file, feature_map_file):
-    logging.info('loading raw data')
+    
     trn = pd.read_csv(train_file, index_col=ID_COL)
     tst = pd.read_csv(test_file, index_col=ID_COL)
 
+    # trn["milage"]= trn["milage"].str.replace("mi.","").replace(" ","").str.replace(",","").astype(int, errors="ignore")
+    # trn["price"]= trn["price"].str.replace("$","").replace(" ","").str.replace(",","").astype(int, errors="ignore")
+    
+    logging.info(f'loading raw data: train {trn.shape}, test {tst.shape}')
     y = trn[TARGET_COL].values
     n_trn = trn.shape[0]
-
     trn.drop(TARGET_COL, axis=1, inplace=True)
 
-    cat_cols = [x for x in trn.columns if trn[x].dtype == np.object]
-    num_cols = [x for x in trn.columns if trn[x].dtype != np.object]
+    
+    cat_cols = ['brand', 'model', 'fuel_type', 'engine', 'transmission', 'ext_col', 'int_col', 'accident', 'clean_title', 'model_year']
+    num_cols = ['milage']
 
-    logging.info('categorical: {}, numerical: {}'.format(len(cat_cols),
-                                                         len(num_cols)))
-
-    df = pd.concat([trn, tst], axis=0)
-
-    logging.info('normalizing numeric features')
-    nm = Normalizer()
-    df[num_cols] = nm.fit_transform(df[num_cols].values)
+    cols = cat_cols + num_cols
+    df = pd.concat([trn[cols], tst[cols]], axis=0)
+    logging.info(f"df shape {df.shape}, cat {cat_cols}, num {num_cols}")
 
     logging.info('label encoding categorical variables')
-    ohe = OneHotEncoder(min_obs=10)
-    X_ohe = ohe.fit_transform(df[cat_cols])
-    ohe_cols = ['ohe{}'.format(i) for i in range(X_ohe.shape[1])]
+    lbe = LabelEncoder()
+    for col in cat_cols:
+        df[col] = lbe.fit_transform(df[col])
+    df[num_cols] = df[num_cols].fillna(-1)
 
-    X = sparse.hstack((df[num_cols].values, X_ohe), format='csr')
-
+    # print(f"feature_map_file {feature_map_file}")
     with open(feature_map_file, 'w') as f:
-        for i, col in enumerate(num_cols + ohe_cols):
-            f.write('{}\t{}\tq\n'.format(i, col))
+        for i, col in enumerate(df.columns):
+            f.write('{}\t{}\t\n'.format(i, col))
 
     logging.info('saving features')
-    save_data(X[:n_trn,], y, train_feature_file)
-    save_data(X[n_trn:,], None, test_feature_file)
-
-
+    save_data(df.values[:n_trn,], y, train_feature_file)
+    save_data(df.values[n_trn:,], None, test_feature_file)
+    
 if __name__ == '__main__':
-
+    logname = f"{os.path.basename(__file__).replace('generate_','').replace('.py','')}.log"
     logging.basicConfig(format='%(asctime)s   %(levelname)s   %(message)s',
-                        level=logging.DEBUG)
+                        level=logging.DEBUG,
+                        filename=f'logs/{logname}'
+                    )
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--train-file', required=True, dest='train_file')

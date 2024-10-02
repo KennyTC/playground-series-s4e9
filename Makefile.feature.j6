@@ -1,9 +1,10 @@
 #--------------------------------------------------------------------------
-# j3: based on j2 + milage feature, model year feature
+# j6: j5 + learn feature based on this nb: https://www.kaggle.com/competitions/playground-series-s4e5/discussion/509043
+#     and features between attr
 #--------------------------------------------------------------------------
 include Makefile
 
-FEATURE_NAME := j3
+FEATURE_NAME := j6
 
 FEATURE_TRN := $(DIR_FEATURE)/$(FEATURE_NAME).trn.h5
 FEATURE_TST := $(DIR_FEATURE)/$(FEATURE_NAME).tst.h5
